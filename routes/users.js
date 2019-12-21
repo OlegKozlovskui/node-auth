@@ -1,5 +1,7 @@
 const express = require('express');
-const router = express.Router();
+const router = require('express-promise-router')();
+
+const { validateBody, schemas } = require('../utils/route-helpers');
 
 const {
   signIn,
@@ -7,8 +9,8 @@ const {
   getSecret
 } = require('../controllers/users');
 
-router.route('/signup').post(signIn);
-router.route('/signin').post(signUp);
+router.route('/signup').post(validateBody(schemas.authSchemas), signIn);
+router.route('/signin').post(validateBody(schemas.authSchemas), signUp);
 router.route('/secret').get(getSecret);
 
 module.exports = router;

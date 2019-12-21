@@ -11,9 +11,7 @@ const app = express();
 app.use(express.json());
 
 // Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+app.use(morgan('dev'));
 
 // Routes
 app.use('/api/v1/users', users);
