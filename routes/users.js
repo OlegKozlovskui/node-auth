@@ -9,8 +9,8 @@ const {
   getSecret
 } = require('../controllers/users');
 
-router.route('/signup').post(validateBody(schemas.authSchemas), signIn);
-router.route('/signin').post(validateBody(schemas.authSchemas), signUp);
+router.route('/signin').post(validateBody(schemas.authSchemas), signIn);
+router.route('/signup').post(validateBody(schemas.authSchemas), signUp);
 router.route('/secret').get(getSecret);
 
 module.exports = router;
