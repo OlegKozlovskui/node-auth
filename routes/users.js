@@ -11,7 +11,11 @@ const {
   getSecret
 } = require('../controllers/users');
 
-router.route('/signin').post(validateBody(schemas.authSchemas), signIn);
+router.route(
+  validateBody(schemas.authSchemas),
+  password.authenticate('local', { session: false }),
+  '/signin'
+).post(validateBody(schemas.authSchemas), signIn);
 router.route('/signup').post(validateBody(schemas.authSchemas), signUp);
 router.route(password.authenticate('jwt', { session: false }), '/secret').get(getSecret);
 
