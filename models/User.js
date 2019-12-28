@@ -2,22 +2,48 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
-  email: {
+  method: {
     type: String,
-    require: true,
-    unique: true,
-    lowercase: true
-  },
-  password: {
-    type: String,
+    enum: ['local', 'google', 'facebook'],
     require: true
+  },
+  local: {
+    email: {
+      type: String,
+      lowercase: true
+    },
+    password: {
+      type: String,
+    },
+  },
+  google: {
+    id: {
+      type: String
+    },
+    email: {
+      type: String,
+      lowercase: true
+    }
+  },
+  facebook: {
+    id: {
+      type: String
+    },
+    email: {
+      type: String,
+      lowercase: true
+    }
   },
 });
 
 UserSchema.pre('save', async function (next) {
   try  {
+    if (this.method !== 'local') {
+      next();
+    }
+
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.local.password = await bcrypt.hash(this.local.password, salt);
     next();
   } catch (err) {
     next(err);
@@ -26,7 +52,7 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.isValidPassword = async function (newPassword) {
   try {
-    return await bcrypt.compare(newPassword, this.password);
+    return await bcrypt.compare(newPassword, this.local.password);
   } catch (err) {
     throw new Error(err);
   }

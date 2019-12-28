@@ -3,11 +3,11 @@ const morgan = require('morgan');
 const colors = require('colors');
 const dotenv = require('dotenv');
 
-const connectDB = require('./config/db');
-const users = require('./routes/users');
-
 // Load env vars
 dotenv.config({ path: './config/config.env' });
+
+const connectDB = require('./config/db');
+const users = require('./routes/users');
 
 // Connect to database
 connectDB();
