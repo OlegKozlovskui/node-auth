@@ -46,7 +46,15 @@ exports.signIn = async (req, res, next) => {
 
 exports.googleOAuth = async (req, res, next) => {
   const token = signToken(req.user);
-  console.log('token', req.user);
+
+  res.status(200).json({
+    success: true,
+    token
+  });
+};
+
+exports.facebookOAuth = async (req, res, next) => {
+  const token = signToken(req.user);
 
   res.status(200).json({
     success: true,

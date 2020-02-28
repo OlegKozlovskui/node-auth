@@ -2,6 +2,7 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-plus-token');
+const FacebookStrategy = require('passport-facebook-token');
 const { ExtractJwt } = require('passport-jwt');
 
 const User = require('../models/User');
@@ -39,6 +40,31 @@ passport.use('googleStrategy', new GoogleStrategy({
 
     const newUser = await User.create({
       method: 'google',
+      google: {
+        id: profile.id,
+        email: profile.emails[0].value
+      }
+    });
+
+    done(null, newUser);
+  } catch(error) {
+    done(error, false);
+  }
+}));
+
+// Facebook Strategy
+passport.use('facebookStrategy', new FacebookStrategy({
+  clientID: process.env.FACEBOOK_CLIENT_ID,
+  clientSecret: process.env.FACEBOOK_SECRET_KEY,
+}, async (accessToken, refreshToken, profile, done) => {
+  try {
+    const existingUser = await User.findOne({ "facebook.id": profile.id });
+    if (existingUser) {
+      return done(null, existingUser);
+    }
+
+    const newUser = await User.create({
+      method: 'facebook',
       google: {
         id: profile.id,
         email: profile.emails[0].value

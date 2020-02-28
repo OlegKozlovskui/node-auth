@@ -9,16 +9,19 @@ const {
   signIn,
   signUp,
   googleOAuth,
+  facebookOAuth,
   getSecret
 } = require('../controllers/users');
 
 const jwtStrategy = passport.authenticate('jwt', { session: false });
 const localStrategy = passport.authenticate('local', { session: false });
 const googleStrategy = passport.authenticate('googleStrategy', { session: false });
+const facebookStrategy = passport.authenticate('facebookStrategy', { session: false });
 
 router.route('/signup').post(validateBody(schemas.authSchemas), signUp);
 router.route('/signin').post(validateBody(schemas.authSchemas), localStrategy, signIn);
 router.route('/oauth/google').post(googleStrategy, googleOAuth);
+router.route('/oauth/facebook').post(facebookStrategy, facebookOAuth);
 router.route('/secret').get(jwtStrategy, getSecret);
 
 module.exports = router;
